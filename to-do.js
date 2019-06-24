@@ -3,7 +3,7 @@ let toDoDate = document.getElementById("to-do-date");
 let toDoTime = document.getElementById("to-do-time");
 let add = document.getElementById("add");
 let reset = document.getElementById("reset");
-let content =document.getElementById("content");
+let content = document.getElementById("content");
 let noteDiv = '';
 let noteArray = [];
 let noteObj = {
@@ -12,7 +12,8 @@ let noteObj = {
     time: "some"
 };
 let appNodes = [];
-add.addEventListener("click", function(e){
+let ctr = 0;
+add.addEventListener("click", function (e) {
     e.preventDefault();
     let textValue = toDoText.value;
     toDoText.value = '';
@@ -25,29 +26,28 @@ add.addEventListener("click", function(e){
     noteObj.date = dateValue;
     noteObj.time = timeValue;
     noteArray.push(Object.create(noteObj));
-    
-    
-    
-
+    //JSON.stringify(noteArray)
+    localStorage.setItem("appNodes[" + ctr + "]", JSON.stringify(noteObj));
+    ctr++;
 });
 
 
 function buildPage(textValue, dateValue, timeValue) {
 
-    
-        noteDiv = document.createElement('div');
-        noteDiv.setAttribute('class','note');
-        let textDiv = buildDiv("text-cl", "text");
-        let dateDiv = buildDiv("text-cl", "date");
-        let timeDiv = buildDiv("text-cl", "time")
-        textDiv.innerHTML = textValue;
-        dateDiv.innerHTML = dateValue;
-        timeDiv.innerHTML = timeValue;
-        noteDiv.appendChild(textDiv);
-        noteDiv.appendChild(dateDiv);
-        noteDiv.appendChild(timeDiv);
-        content.insertBefore(noteDiv, content.childNodes[0]);
-        
+
+    noteDiv = document.createElement('div');
+    noteDiv.setAttribute('class', 'note');
+    let textDiv = buildDiv("text-cl", "text");
+    let dateDiv = buildDiv("text-cl", "date");
+    let timeDiv = buildDiv("text-cl", "time")
+    textDiv.innerHTML = textValue;
+    dateDiv.innerHTML = dateValue;
+    timeDiv.innerHTML = timeValue;
+    noteDiv.appendChild(textDiv);
+    noteDiv.appendChild(dateDiv);
+    noteDiv.appendChild(timeDiv);
+    content.insertBefore(noteDiv, content.childNodes[0]);
+
 
 }
 function buildDiv(cl1, cl2) {
