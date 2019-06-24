@@ -20,10 +20,10 @@ form {
 	height: 250px;
 	float: left;
 }
-.glyphicon {
+.fa-times {
 	opacity: 0;
 }
-.glyphicon:hover {
+.fa-times:hover {
 	opacity: 1;
 }
 .text {

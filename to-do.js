@@ -31,7 +31,7 @@ add.addEventListener("click", function (e) {
     ctr++;
 });
 
-
+let xIcon = document.createElement('i');
 function buildPage(textValue, dateValue, timeValue) {
 
 
@@ -40,8 +40,7 @@ function buildPage(textValue, dateValue, timeValue) {
     let textDiv = buildDiv("text-cl", "text");
     let dateDiv = buildDiv("text-cl", "date");
     let timeDiv = buildDiv("text-cl", "time");
-    let xIcon = document.createElement('i');
-    xIcon.setAttribute('class', 'glyphicon glyphicon-remove text-right');
+    xIcon.setAttribute('class', 'fas');
     textDiv.innerHTML = textValue;
     dateDiv.innerHTML = dateValue;
     timeDiv.innerHTML = timeValue;
@@ -50,7 +49,11 @@ function buildPage(textValue, dateValue, timeValue) {
     noteDiv.appendChild(dateDiv);
     noteDiv.appendChild(timeDiv);
     content.insertBefore(noteDiv, content.childNodes[0]);
-
+    //buggy for some reason
+    /*noteDiv.addEventListener("mouseover", function () {
+        this.classList.toggle('fa-times');
+        console.log("in mouseover");*/
+    });
 
 }
 function buildDiv(cl1, cl2) {
@@ -58,5 +61,6 @@ function buildDiv(cl1, cl2) {
     divElement.setAttribute('class', cl1 + " " + cl2);
     return divElement;
 }
+
 
 
