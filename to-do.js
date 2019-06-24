@@ -39,10 +39,13 @@ function buildPage(textValue, dateValue, timeValue) {
     noteDiv.setAttribute('class', 'note');
     let textDiv = buildDiv("text-cl", "text");
     let dateDiv = buildDiv("text-cl", "date");
-    let timeDiv = buildDiv("text-cl", "time")
+    let timeDiv = buildDiv("text-cl", "time");
+    let xIcon = document.createElement('i');
+    xIcon.setAttribute('class', 'glyphicon glyphicon-remove text-right');
     textDiv.innerHTML = textValue;
     dateDiv.innerHTML = dateValue;
     timeDiv.innerHTML = timeValue;
+    noteDiv.appendChild(xIcon);
     noteDiv.appendChild(textDiv);
     noteDiv.appendChild(dateDiv);
     noteDiv.appendChild(timeDiv);

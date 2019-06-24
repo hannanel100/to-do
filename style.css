@@ -1,36 +1,39 @@
-body{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background-image: url("images/tile.jpg");
-    z-index: 1;
+body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background-image: url("images/tile.jpg");
+	z-index: 1;
 }
-h1{
-    font-family: 'Open Sans', sans-serif;
+h1 {
+	font-family: "Open Sans", sans-serif;
 }
-form{
-    background-image: url("images/formbg.jpg");
-    z-index: 2;
-    height: 200px;
+form {
+	background-image: url("images/formbg.jpg");
+	z-index: 2;
+	height: 200px;
 }
-.note{
-    background-image: url("images/notebg.png");
-    background-repeat: no-repeat;
-    width: 200px;
-    height: 250px;
-    float: left;
-       
+.note {
+	background-image: url("images/notebg.png");
+	background-repeat: no-repeat;
+	width: 200px;
+	height: 250px;
+	float: left;
 }
-.note:hover{
-    
+.glyphicon {
+	opacity: 0;
 }
-.text{
-    margin: 20px 10px;
-    width: 180px;
-    height: 160px;
-    color: red;
-    overflow-x: auto;
+.glyphicon:hover {
+	opacity: 1;
 }
-.date, .time{
-    margin-left: 10px;
+.text {
+	margin: 10px 10px;
+	width: 180px;
+	height: 140px;
+	color: red;
+	overflow-x: auto;
+}
+.date,
+.time {
+	margin-left: 10px;
 }
