@@ -20,12 +20,8 @@ form {
 	height: 250px;
 	float: left;
 }
-.fa-times {
-	opacity: 0;
-}
-.fa-times:hover {
-	opacity: 1;
-}
+
+
 .text {
 	margin: 10px 10px;
 	width: 180px;
