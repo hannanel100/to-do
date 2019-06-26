@@ -20,7 +20,19 @@ form {
 	height: 250px;
 	float: left;
 }
+.show {
+	opacity: 1;
+	animation: fade 1s linear;
+}
+@keyframes fade {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+.hide {
+	opacity: 0;
+	 
 
+}
 
 .text {
 	margin: 10px 10px;

@@ -29,6 +29,8 @@ add.addEventListener("click", function (e) {
     //JSON.stringify(noteArray)
     localStorage.setItem("appNodes[" + ctr + "]", JSON.stringify(noteObj));
     ctr++;
+    
+    
 });
 
 let xIcon = document.createElement('i');
@@ -36,7 +38,7 @@ function buildPage(textValue, dateValue, timeValue) {
 
 
     noteDiv = document.createElement('div');
-    noteDiv.setAttribute('class', 'note');
+    noteDiv.setAttribute('class', 'note hide');
     let textDiv = buildDiv("text-cl", "text");
     let dateDiv = buildDiv("text-cl", "date");
     let timeDiv = buildDiv("text-cl", "time");
@@ -48,18 +50,12 @@ function buildPage(textValue, dateValue, timeValue) {
     noteDiv.appendChild(textDiv);
     noteDiv.appendChild(dateDiv);
     noteDiv.appendChild(timeDiv);
-    noteDiv.style.opacity = 0;
+    
 
     content.insertBefore(noteDiv, content.childNodes[0]);
-    //fadeIn(noteDiv);
-    //buggy for some reason
-    /*noteDiv.addEventListener("mouseover", function () {
-        setTimeout(function () {
-            xIcon.classList.toggle('fa-times');
-            console.log("in mouseover");
-        }, 500);
-
-    });*/
+    noteDiv.classList.add('show');
+    noteDiv.classList.remove('hide');
+    
 
 }
 function buildDiv(cl1, cl2) {
@@ -67,18 +63,6 @@ function buildDiv(cl1, cl2) {
     divElement.setAttribute('class', cl1 + " " + cl2);
     return divElement;
 }
-/*function not working
-function fadeIn(noteDiv) {
-    let interval = 0;
-    let fadeLength = 10;
-    for (let i = 0; i <= fadeLength; i++) {
-        setTimeout(function () {
-            console.log(interval / fadeLength);
-            noteDiv.style.opacity = interval / fadeLength;
-            interval++;
-        }, 1000)
 
-    }
-}
-*/
+
 
