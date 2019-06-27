@@ -8,8 +8,9 @@
     let noteDiv = '';
     let noteArray;
     let xIcon = '';
+    let lastId;
     let noteObjTemplate = {
-        //id: "some",
+        id: "note0",
         text: "some",
         date: "some",
         time: "some"
@@ -31,15 +32,20 @@
         let dateValue = toDoDate.value;
         let timeValue = toDoTime.value;
         let noteObj = createObj(textValue, dateValue, timeValue);
-        buildPage(textValue, dateValue, timeValue);
+        buildPage(noteObj.text, noteObj.date, noteObj.time);
         noteArray.push(noteObj);
         localStorage.setItem("noteArray", JSON.stringify(noteArray));
         //get the array of objects. 
         arrOfObj = (JSON.parse(localStorage.getItem("noteArray")));
-        console.log("arrOfObj[0].text: " + JSON.stringify(arrOfObj[0].text));
-        console.log("note" + (arrOfObj.length - 1));//gets the last id
-        localStorage.setItem("lastId", "note" + (arrOfObj.length - 1));//saves last id to localStorage. still gets overwritten when reload page
-        //still need to work on local storage
+        //console.log("arrOfObj[0].text: " + JSON.stringify(arrOfObj[0].text));
+        if (arrOfObj.length > 0) {
+            lastId = "note" + (arrOfObj.length);//gets the last id
+        }
+        else {
+            lastId = "note0";
+        }
+
+        localStorage.setItem("lastId", lastId);//saves last id to localStorage. still gets overwritten when reload page
         noteDiv.addEventListener("mouseenter", function () {
             this.childNodes[0].style.opacity = 1;
             xIcon.addEventListener("click", function () {
@@ -56,6 +62,7 @@
 
     function createObj(textValue, dateValue, timeValue) {
         let noteObj = Object.create(noteObjTemplate);
+        noteObj.id = lastId;
         noteObj.text = textValue;
         noteObj.date = dateValue;
         noteObj.time = timeValue;
@@ -65,7 +72,7 @@
         //let noteDivId = "note" + Number(ctr);
         noteDiv = document.createElement('div');
         noteDiv.setAttribute('class', 'note hide');
-        //noteDiv.setAttribute('id', noteDivId);
+        noteDiv.setAttribute('id', lastId);
         buildNote(noteDiv, textValue, dateValue, timeValue);
         //ctr++;
         //console.log("noteDiv id: " + noteDivId);
