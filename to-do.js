@@ -6,11 +6,11 @@
     let reset = document.getElementById("reset");
     let content = document.getElementById("content");
     let noteDiv = '';
-    let noteArray;
+    let noteArray =[];
     let xIcon = '';
     let lastId;
     let noteObjTemplate = {
-        id: "note0",
+        id: "note"+lastId,
         text: "some",
         date: "some",
         time: "some"
@@ -18,32 +18,33 @@
     let arrOfObj = {
         arr: [""]
     };
-    if (localStorage.length > 0) {
+    if (localStorage.length > 1) {
         noteArray = (JSON.parse(localStorage.getItem("noteArray")));
+        console.log()
+        lastId = "note" + (noteArray.length);//gets the last id
     }
     else {
         noteArray = [];
+        lastId = "note0";
     }
 
 
     add.addEventListener("click", function (e) {
         e.preventDefault();
-        let textValue = toDoText.value;
-        let dateValue = toDoDate.value;
-        let timeValue = toDoTime.value;
-        let noteObj = createObj(textValue, dateValue, timeValue);
-        buildPage(noteObj.text, noteObj.date, noteObj.time);
+        let noteObj = createObj(toDoText.value, toDoDate.value, toDoTime.value);
+        buildPage(noteObj);
         noteArray.push(noteObj);
         localStorage.setItem("noteArray", JSON.stringify(noteArray));
         //get the array of objects. 
-        arrOfObj = (JSON.parse(localStorage.getItem("noteArray")));
+        noteArray = (JSON.parse(localStorage.getItem("noteArray")));
         //console.log("arrOfObj[0].text: " + JSON.stringify(arrOfObj[0].text));
-        if (arrOfObj.length > 0) {
-            lastId = "note" + (arrOfObj.length);//gets the last id
-        }
-        else {
-            lastId = "note0";
-        }
+        // if (noteArray.length > 0) {
+        //     lastId = "note" + (noteArray.length);//gets the last id
+        //     debugger;
+        // }
+        // else {
+        //     lastId = "note0";
+        // }
 
         localStorage.setItem("lastId", lastId);//saves last id to localStorage. still gets overwritten when reload page
         noteDiv.addEventListener("mouseenter", function () {
@@ -68,12 +69,11 @@
         noteObj.time = timeValue;
         return noteObj;
     }
-    function buildPage(textValue, dateValue, timeValue) {
-        //let noteDivId = "note" + Number(ctr);
+    function buildPage(noteObj) {
         noteDiv = document.createElement('div');
         noteDiv.setAttribute('class', 'note hide');
         noteDiv.setAttribute('id', lastId);
-        buildNote(noteDiv, textValue, dateValue, timeValue);
+        buildNote(noteDiv, noteObj);
         //ctr++;
         //console.log("noteDiv id: " + noteDivId);
         //return noteDivId;
@@ -84,15 +84,15 @@
         divElement.setAttribute('class', cl1 + " " + cl2);
         return divElement;
     }
-    function buildNote(noteDiv, textValue, dateValue, timeValue) {
+    function buildNote(noteDiv, noteObj) {
         let textDiv = buildDiv("text-cl", "text");
         let dateDiv = buildDiv("text-cl", "date");
         let timeDiv = buildDiv("text-cl", "time");
         xIcon = document.createElement('i');
         xIcon.setAttribute('class', 'fas fa-times');
-        textDiv.innerHTML = textValue;
-        dateDiv.innerHTML = dateValue;
-        timeDiv.innerHTML = timeValue;
+        textDiv.innerHTML = noteObj.text;
+        dateDiv.innerHTML = noteObj.date;
+        timeDiv.innerHTML = noteObj.time;
         noteDiv.appendChild(xIcon);
         noteDiv.appendChild(textDiv);
         noteDiv.appendChild(dateDiv);
