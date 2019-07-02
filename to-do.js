@@ -129,7 +129,4 @@
         toDoDate.value = '';
         toDoTime.value = '';
     }
-
-
-
 })();
