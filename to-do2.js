@@ -1,3 +1,5 @@
+//still need to implement ids to notes and in local storage.
+//then deal with erasing notes
 (function () {
     const form = document.querySelector("form");
     const toDoText = document.getElementById("to-do-text");
@@ -6,7 +8,7 @@
     const content = document.getElementById("content");
     const reset = document.getElementById("reset");
     let noteArray = [];
-    localStorage.setItem('noteArray', JSON.stringify(noteArray))
+    let noteDiv;
     let noteObjTemplate = {
         id: "some",
         text: "some",
@@ -14,49 +16,68 @@
         time: "some"
     };
     const data = JSON.parse(localStorage.getItem('noteArray'));
+    if (data != null) {
+        for (let i = 0; i < data.length; i++) {
+            getNoteTemplate(data[i]);
+        }
+        noteArray = data;
+    }
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         let noteObj = createObj(toDoText.value, toDoDate.value, toDoTime.value);
         noteArray.push(noteObj);
-        getNoteTemplate(function (t) {
-            // t is the html template
-            noteMaker(noteObj, t);
-            //const noteDiv = document.getElementsByClassName("note");
-            // noteDiv.classList.add('show'); I get an error - has to do with 
-            // noteDiv.classList.remove('hide');
-        })
-        clearInputs();
+        localStorage.setItem("noteArray", JSON.stringify(noteArray));
+        getNoteTemplate(noteObj);
+        clearInputs(); 
     });
+
     reset.addEventListener("click", clearInputs);
 
-    function createObj(textValue, dateValue, timeValue) {
-        let noteObj = Object.create(noteObjTemplate);
-        noteObj.text = textValue;
-        noteObj.date = dateValue;
-        noteObj.time = timeValue;
-        return noteObj;
+    function delIcon() {
+        let notes = document.getElementsByClassName("note");
+        for (let i = 0; i < notes.length; i++) {
+            notes[i].addEventListener("mouseenter", function (e) {
+                this.childNodes[1].style.opacity = 1;
+            })
+            notes[i].addEventListener("mouseleave", function (e) {
+                if (this.childNodes[1].style.opacity == 1) {
+                    this.childNodes[1].style.opacity = 0;
+                }
+            });
+        }
     }
+
+    function createObj(textValue, dateValue, timeValue) {
+        let noteObjTemp = Object.create(noteObjTemplate);
+        noteObjTemp.text = textValue;
+        noteObjTemp.date = dateValue;
+        noteObjTemp.time = timeValue;
+        return noteObjTemp;
+    }
+
     function noteMaker(noteObj, template) {
+        let dummyDiv = document.createElement('div');
         template = template.replace('{{text}}', noteObj.text);
         template = template.replace('{{date}}', noteObj.date);
         template = template.replace('{{time}}', noteObj.time);
-        content.innerHTML += template;
+        dummyDiv.innerHTML = template
+        return dummyDiv;
     }
-    function getNoteTemplate(callback) {
-        var a = new XMLHttpRequest(); // ajax object
+    function getNoteTemplate(noteObj) {
+        var xhr = new XMLHttpRequest(); // ajax object
         // when data received
-        a.addEventListener("load", function () {
-            callback(this.responseText);
-            const noteDiv = document.getElementsByClassName("note");
-            noteDiv.classList.add('show'); //I get an error - has to do with 
+        xhr.addEventListener("load", function () {
+            noteDiv = noteMaker(noteObj, this.responseText).firstChild;
+            content.insertBefore(noteDiv, content.childNodes[0]);
+            noteDiv.classList.add('show');
             noteDiv.classList.remove('hide');
+            delIcon();
         });
         // what is the resource address
-        a.open("GET", 'template.html');
+        xhr.open("GET", 'template.html');
         // invoke ajax request
-        a.send();
+        xhr.send();
     }
-    /**/ 
     function clearInputs() {
         toDoText.value = '';
         toDoDate.value = '';
