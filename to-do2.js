@@ -1,6 +1,4 @@
-//implemented ids to notes. still need to fix when refresh, ids start from 0.
-//also, notes are put back into page after refresh in reverse order.
-//then deal with erasing notes
+//problem when erasing elements. i get an error. and also, when i erase last note and refresh, it comes back
 (function () {
     const form = document.querySelector("form");
     const toDoText = document.getElementById("to-do-text");
@@ -8,9 +6,9 @@
     const toDoTime = document.getElementById("to-do-time");
     const content = document.getElementById("content");
     const reset = document.getElementById("reset");
-    let lastId; 
+    let lastId;
     //const idRefresh = JSON.parse(localStorage.getItem('lastId'));
-    let id=-1;
+    let id = -1;
     let noteArray = [];
     let noteDiv;
     let noteObjTemplate = {
@@ -21,10 +19,10 @@
     };
     const data = JSON.parse(localStorage.getItem('noteArray'));
     if (data != null) {
-        for (let i = 0; i < data.length; i++) {
-            getNoteTemplate(data[i]);
-        }
         noteArray = data;
+        //can be put in function - repeated twice
+        buildPage(noteArray);
+        lastId = noteArray[0].id;
     }
     form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -32,10 +30,7 @@
         noteArray.unshift(noteObj);
         localStorage.setItem("noteArray", JSON.stringify(noteArray));
         getNoteTemplate(noteObj);
-        //console.log(noteObj);
         localStorage.setItem("lastId", noteObj.id);
-        
-        //console.log(lastId);
         clearInputs();
     });
 
@@ -48,10 +43,17 @@
             notes[i].addEventListener("mouseenter", function (e) {
                 this.childNodes[1].style.opacity = 1;
                 //add click event listener to erase note
-                    xIcon[i].addEventListener("click", function () {
-                        //console.log(this.parentNode);
-                    })
-                
+                xIcon[i].addEventListener("click", function () {
+                    let delNoteId = this.parentNode.id;
+                    let index = noteArray.findIndex(delId => delId.id == delNoteId);
+                    noteArray.splice(index, 1);
+                    content.innerHTML = "";
+                    //can be put in function
+                    buildPage(noteArray);
+                    lastId = noteArray[0].id;
+                    console.log(noteArray);
+                    localStorage.setItem("noteArray", JSON.stringify(noteArray));
+                })
             })
             notes[i].addEventListener("mouseleave", function (e) {
                 if (this.childNodes[1].style.opacity == 1) {
@@ -60,19 +62,19 @@
             });
         }
     }
-    function idNum(){
-        if (lastId==null){
-            //console.log("id: "+ id);
+
+    function idNum() {
+        if (lastId == null) {
             id++;
-            return "note"+ id;
+            return "note" + id;
         }
-        else{
+        else {
             lastId = JSON.parse(localStorage.getItem("noteArray"))[0].id;
-            id = (Number(lastId.charAt(4))+1);
-            console.log("id: ");
+            id = (Number(lastId.charAt(4)) + 1);
             return "note" + id;
         }
     }
+
     function createObj(textValue, dateValue, timeValue) {
         let noteObjTemp = Object.create(noteObjTemplate);
         //console.log("before" + JSON.stringify(noteObjTemp));
@@ -92,6 +94,11 @@
         template = template.replace('{{time}}', noteObj.time);
         dummyDiv.innerHTML = template
         return dummyDiv;
+    }
+    function buildPage(noteArray){
+        for (let j = noteArray.length; j >= 0; j--) {
+            getNoteTemplate(noteArray[j]);
+        }
     }
     function getNoteTemplate(noteObj) {
         var xhr = new XMLHttpRequest(); // ajax object
