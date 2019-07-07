@@ -1,3 +1,9 @@
+let noteTemplate = `<div class="note hide" id={{id}}>
+<i class="fas fa-times"></i>
+<div class="text text-cl">{{text}}</div>
+<div class="date text-cl">{{date}}</div>
+<div class="time text-cl">{{time}}</div>
+</div>`;
 //problem when erasing elements. i get an error. and also, when i erase last note and refresh, it comes back
 (function () {
     const form = document.querySelector("form");
@@ -20,13 +26,13 @@
     const data = JSON.parse(localStorage.getItem('noteArray'));
     if (data != null) {
         noteArray = data;
-        //can be put in function - repeated twice
         buildPage(noteArray);
         lastId = noteArray[0].id;
     }
     form.addEventListener('submit', function (e) {
         e.preventDefault();
-        let noteObj = createObj(toDoText.value, toDoDate.value, toDoTime.value);
+        let noteObj = createObj(idNum(), toDoText.value, toDoDate.value, toDoTime.value);
+        //debugger;
         noteArray.unshift(noteObj);
         localStorage.setItem("noteArray", JSON.stringify(noteArray));
         getNoteTemplate(noteObj);
@@ -42,16 +48,14 @@
         for (let i = 0; i < notes.length; i++) {
             notes[i].addEventListener("mouseenter", function (e) {
                 this.childNodes[1].style.opacity = 1;
-                //add click event listener to erase note
                 xIcon[i].addEventListener("click", function () {
                     let delNoteId = this.parentNode.id;
                     let index = noteArray.findIndex(delId => delId.id == delNoteId);
                     noteArray.splice(index, 1);
                     content.innerHTML = "";
-                    //can be put in function
                     buildPage(noteArray);
                     lastId = noteArray[0].id;
-                    console.log(noteArray);
+                    // console.log(noteArray);
                     localStorage.setItem("noteArray", JSON.stringify(noteArray));
                 })
             })
@@ -75,10 +79,10 @@
         }
     }
 
-    function createObj(textValue, dateValue, timeValue) {
+    function createObj(id, textValue, dateValue, timeValue) {
         let noteObjTemp = Object.create(noteObjTemplate);
         //console.log("before" + JSON.stringify(noteObjTemp));
-        noteObjTemp.id = idNum();
+        noteObjTemp.id = id;
         noteObjTemp.text = textValue;
         noteObjTemp.date = dateValue;
         noteObjTemp.time = timeValue;
@@ -88,33 +92,28 @@
 
     function noteMaker(noteObj, template) {
         let dummyDiv = document.createElement('div');
+        debugger;
         template = template.replace('{{id}}', noteObj.id);
         template = template.replace('{{text}}', noteObj.text);
         template = template.replace('{{date}}', noteObj.date);
         template = template.replace('{{time}}', noteObj.time);
-        dummyDiv.innerHTML = template
+        dummyDiv.innerHTML = template;
         return dummyDiv;
     }
-    function buildPage(noteArray){
+    function buildPage(noteArray) {
         for (let j = noteArray.length; j >= 0; j--) {
             getNoteTemplate(noteArray[j]);
         }
     }
     function getNoteTemplate(noteObj) {
-        var xhr = new XMLHttpRequest(); // ajax object
-        // when data received
-        xhr.addEventListener("load", function () {
-            noteDiv = noteMaker(noteObj, this.responseText).firstChild;
-            content.insertBefore(noteDiv, content.childNodes[0]);
-            noteDiv.classList.add('show');
-            noteDiv.classList.remove('hide');
-            delIcon();
-        });
-        // what is the resource address
-        xhr.open("GET", 'template.html');
-        // invoke ajax request
-        xhr.send();
+        noteDiv = noteMaker(noteObj,noteTemplate).firstChild;
+        content.insertBefore(noteDiv, content.childNodes[0]);
+        noteDiv.classList.add('show');
+        noteDiv.classList.remove('hide');
+        delIcon();
     }
+
+
     function clearInputs() {
         toDoText.value = '';
         toDoDate.value = '';
