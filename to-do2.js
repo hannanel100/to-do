@@ -1,11 +1,11 @@
-let noteTemplate = `<div class="note hide" id={{id}}>
-<i class="fas fa-times"></i>
-<div class="text text-cl">{{text}}</div>
-<div class="date text-cl">{{date}}</div>
-<div class="time text-cl">{{time}}</div>
-</div>`;
 //problem when erasing elements. i get an error. and also, when i erase last note and refresh, it comes back
 (function () {
+    let noteTemplate = `<div class="note hide" id={{id}}>
+    <i class="fas fa-times"></i>
+    <div class="text text-cl">{{text}}</div>
+    <div class="date text-cl">{{date}}</div>
+    <div class="time text-cl">{{time}}</div>
+    </div>`;
     const form = document.querySelector("form");
     const toDoText = document.getElementById("to-do-text");
     const toDoDate = document.getElementById("to-do-date");
@@ -23,20 +23,26 @@ let noteTemplate = `<div class="note hide" id={{id}}>
         date: "some",
         time: "some"
     };
-    const data = JSON.parse(localStorage.getItem('noteArray'));
+    let data = JSON.parse(localStorage.getItem('noteArray'));
+    console.log(data);
     if (data != null) {
         noteArray = data;
+        console.log(data);
+        //console.log(noteArray);
         buildPage(noteArray);
         lastId = noteArray[0].id;
     }
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         let noteObj = createObj(idNum(), toDoText.value, toDoDate.value, toDoTime.value);
+        //console.log(noteObj); 
         //debugger;
         noteArray.unshift(noteObj);
         localStorage.setItem("noteArray", JSON.stringify(noteArray));
-        getNoteTemplate(noteObj);
+        getNoteTemplate(noteObj, noteTemplate);
         localStorage.setItem("lastId", noteObj.id);
+        delIcon();
+        data = JSON.parse(localStorage.getItem('noteArray'));
         clearInputs();
     });
 
@@ -51,12 +57,18 @@ let noteTemplate = `<div class="note hide" id={{id}}>
                 xIcon[i].addEventListener("click", function () {
                     let delNoteId = this.parentNode.id;
                     let index = noteArray.findIndex(delId => delId.id == delNoteId);
+                    this.parentNode.remove();
                     noteArray.splice(index, 1);
-                    content.innerHTML = "";
-                    buildPage(noteArray);
-                    lastId = noteArray[0].id;
-                    // console.log(noteArray);
+                    if (noteArray.length > 0) {
+                        lastId = noteArray[0].id;
+                    }
+                    else {
+                        lastId = null;
+                        this.removeEventListener()
+                    }
                     localStorage.setItem("noteArray", JSON.stringify(noteArray));
+                    notes = document.getElementsByClassName("note");
+                    xIcon = document.getElementsByClassName("fas fa-times");
                 })
             })
             notes[i].addEventListener("mouseleave", function (e) {
@@ -83,6 +95,7 @@ let noteTemplate = `<div class="note hide" id={{id}}>
         let noteObjTemp = Object.create(noteObjTemplate);
         //console.log("before" + JSON.stringify(noteObjTemp));
         noteObjTemp.id = id;
+        //console.log(noteObjTemp.id);
         noteObjTemp.text = textValue;
         noteObjTemp.date = dateValue;
         noteObjTemp.time = timeValue;
@@ -92,7 +105,7 @@ let noteTemplate = `<div class="note hide" id={{id}}>
 
     function noteMaker(noteObj, template) {
         let dummyDiv = document.createElement('div');
-        debugger;
+        //debugger;
         template = template.replace('{{id}}', noteObj.id);
         template = template.replace('{{text}}', noteObj.text);
         template = template.replace('{{date}}', noteObj.date);
@@ -102,17 +115,15 @@ let noteTemplate = `<div class="note hide" id={{id}}>
     }
     function buildPage(noteArray) {
         for (let j = noteArray.length; j >= 0; j--) {
-            getNoteTemplate(noteArray[j]);
+            getNoteTemplate(noteArray[j], noteTemplate);
         }
     }
-    function getNoteTemplate(noteObj) {
-        noteDiv = noteMaker(noteObj,noteTemplate).firstChild;
+    function getNoteTemplate(noteObj, noteTemplate) {
+        noteDiv = noteMaker(noteObj, noteTemplate).firstChild;
         content.insertBefore(noteDiv, content.childNodes[0]);
         noteDiv.classList.add('show');
         noteDiv.classList.remove('hide');
-        delIcon();
     }
-
 
     function clearInputs() {
         toDoText.value = '';
