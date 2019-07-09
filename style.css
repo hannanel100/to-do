@@ -11,7 +11,10 @@ h1 {
 form {
 	background-image: url("images/formbg.jpg");
 	z-index: 2;
-	height: 200px;
+	height: 250px;
+}
+#content{
+	width: 100%;
 }
 .note {
 	background-image: url("images/notebg.png");
@@ -19,6 +22,8 @@ form {
 	width: 180px;
 	height: 230px;
 	float: left;
+	margin-left:15px;
+	
 }
 .show {
 	opacity: 1;
@@ -52,5 +57,5 @@ form {
 	opacity: 0;
 }
 label{
-	background-color: #fff;
+	width: 
 }

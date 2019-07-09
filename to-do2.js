@@ -24,13 +24,14 @@
         time: "some"
     };
     let data = JSON.parse(localStorage.getItem('noteArray'));
-    console.log(data);
+    //console.log(data);
     if (data != null) {
         noteArray = data;
-        console.log(data);
+        //console.log(data);
         //console.log(noteArray);
         buildPage(noteArray);
         lastId = noteArray[0].id;
+        delIcon();
     }
     form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -50,35 +51,35 @@
 
     function delIcon() {
         let notes = document.getElementsByClassName("note");
-        let xIcon = document.getElementsByClassName("fas fa-times");
-        for (let i = 0; i < notes.length; i++) {
-            notes[i].addEventListener("mouseenter", function (e) {
-                this.childNodes[1].style.opacity = 1;
-                xIcon[i].addEventListener("click", function () {
-                    let delNoteId = this.parentNode.id;
-                    let index = noteArray.findIndex(delId => delId.id == delNoteId);
-                    this.parentNode.remove();
-                    noteArray.splice(index, 1);
-                    if (noteArray.length > 0) {
-                        lastId = noteArray[0].id;
-                    }
-                    else {
-                        lastId = null;
-                        this.removeEventListener()
-                    }
-                    localStorage.setItem("noteArray", JSON.stringify(noteArray));
-                    notes = document.getElementsByClassName("note");
-                    xIcon = document.getElementsByClassName("fas fa-times");
-                })
-            })
-            notes[i].addEventListener("mouseleave", function (e) {
-                if (this.childNodes[1].style.opacity == 1) {
-                    this.childNodes[1].style.opacity = 0;
+        for (let item of notes) {
+            item.addEventListener("mouseenter", function (e) {
+                let xIcon = this.childNodes[1];
+                xIcon.style.opacity = 1;//
+                xIcon.addEventListener("click", delNote);
+            });
+            item.addEventListener("mouseleave", function (e) {
+                let xIcon = this.childNodes[1];
+                if (xIcon.style.opacity == 1) {
+                    xIcon.style.opacity = 0;
                 }
             });
         }
     }
 
+    function delNote() {
+        let delNoteId = this.parentNode.id;
+        let index = noteArray.findIndex(delId => delId.id == delNoteId);
+        this.parentNode.remove();
+        noteArray.splice(index, 1);
+        if (noteArray.length > 0) {
+            lastId = noteArray[0].id;
+            localStorage.setItem("noteArray", JSON.stringify(noteArray));
+        }
+        else {
+            lastId = null;
+            localStorage.setItem("noteArray", null);
+        }
+    }
     function idNum() {
         if (lastId == null) {
             id++;
@@ -93,19 +94,15 @@
 
     function createObj(id, textValue, dateValue, timeValue) {
         let noteObjTemp = Object.create(noteObjTemplate);
-        //console.log("before" + JSON.stringify(noteObjTemp));
         noteObjTemp.id = id;
-        //console.log(noteObjTemp.id);
         noteObjTemp.text = textValue;
         noteObjTemp.date = dateValue;
         noteObjTemp.time = timeValue;
-        //console.log("after: "+ JSON.stringify(noteObjTemp));
         return noteObjTemp;
     }
 
     function noteMaker(noteObj, template) {
         let dummyDiv = document.createElement('div');
-        //debugger;
         template = template.replace('{{id}}', noteObj.id);
         template = template.replace('{{text}}', noteObj.text);
         template = template.replace('{{date}}', noteObj.date);
@@ -114,7 +111,7 @@
         return dummyDiv;
     }
     function buildPage(noteArray) {
-        for (let j = noteArray.length; j >= 0; j--) {
+        for (let j = noteArray.length-1; j >= 0; j--) {
             getNoteTemplate(noteArray[j], noteTemplate);
         }
     }
